@@ -89,6 +89,7 @@ li {
 
 .desc {
   filter: opacity(80%);
+	width: 500px;
   word-wrap: break-word;
 }
 

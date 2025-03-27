@@ -1,23 +1,12 @@
 "use strict";
 let user = localStorage.getItem("user");
-if (isNaN(user)) {
+if (isNaN(user) || user === null) {
   user = Math.floor(Math.random() * 10);
   localStorage.setItem("user", user);
 }
 
-document
-  .getElementById("searchIcon")
-  .addEventListener("click", openUpSearchBar);
-
-document.addEventListener("DOMContentLoaded", function () {
-  document
-    .getElementById("callFormBtn")
-    .addEventListener("click", openTaskAddForm);
-});
-
-function openTaskAddForm() {
-  let actionDiv = document.getElementsByClassName("action")[0];
-  actionDiv.innerHTML = `<div id="taskForm">
+function getAddTaskFormHtml() {
+  return `<div id="taskForm">
           <span class="formTitle">
             <label for="title">Title:</label>
             <input type="text" class="titleInp" />
@@ -36,16 +25,99 @@ function openTaskAddForm() {
         <span>
           <button id="addTaskBtn">Add</button>
         </span>`;
-  document.getElementById("titleInp").focus();
-  document.getElementById("titleInp").select();
+}
+
+function getTaskDetailHtml(data, index) {
+  console.log(data);
+  return `<div class="taskContainer">
+          <div class="tick">
+            <input type="checkbox" class="tickBtn" value="done" ${
+              data.is_complete ? "checked=true" : ""
+            }/>
+          </div>
+          <div class="task">
+            <p class="title" style="font-weight: bolder">
+              ${data.title}
+              <span class="time">:at ${new Date(data.time).toLocaleDateString(
+                "en-US",
+                dateOptions
+              )}</span>
+            </p>
+            <p class="desc">${data.description.slice(0, 40)}${
+    data.description.length > 40
+      ? `<button class="seeMore">...</button></p>`
+      : ""
+  }
+          </div>
+          <div class="update"><button class="updateBtn" name=${
+            data._id
+          } index=${index}>Update</button></div>
+          <div class="delete">
+            <button class="deleteBtn" name=${data._id} index=${index}>
+              <img
+                src="https://img.icons8.com/?size=100&id=102315&format=png&color=000000"
+                class="deleteIcon"
+              />
+            </button>
+          </div>
+        </div>
+        <p style="margin-top: 30px"></p>`;
+}
+
+function getUpdateTaskFormHtml(data, taskId, index) {
+  return `<div class="updateForm" name=${taskId} index=${index}>
+          <span class="formTitle">
+            <label for="title">Title:</label>
+            <input type="text" class="titleInp" value="${data.title}"/>
+          </span>
+          <br />
+          <span class="formTime">
+            <label for="time">Time:</label>
+            <input type="datetime-local" class="timeInp" value="${data.time}"/>
+          </span>
+          <br />
+          <span class="formDesc">
+            <label for="description" class="newDesc">Description:</label>
+            <input type="text" class="descInp" value="${data.description}"/>
+          </span>
+        </div>
+        <span>
+          <button class="updateTaskBtn" name=${taskId} index=${index}>update</button>
+        </span>`;
+}
+
+let dateOptions = {
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true,
+};
+
+document
+  .getElementById("searchIcon")
+  .addEventListener("click", openUpSearchBar);
+
+document.addEventListener("DOMContentLoaded", function () {
+  document
+    .getElementById("callFormBtn")
+    .addEventListener("click", openTaskAddForm);
+});
+
+function openTaskAddForm() {
+  let actionDiv = document.getElementsByClassName("action")[0];
+  actionDiv.innerHTML = getAddTaskFormHtml();
+  document.getElementsByClassName("titleInp")[0].focus();
+  document.getElementsByClassName("titleInp")[0].select();
   document.getElementById("addTaskBtn").addEventListener("click", addTask);
 }
 
 async function addTask() {
   try {
-    let title = document.getElementById("titleInp").value;
-    let time = document.getElementById("timeInp").value;
-    let description = document.getElementById("descInp").value;
+    let title = document.getElementsByClassName("titleInp")[0].value;
+    let time = document.getElementsByClassName("timeInp")[0].value;
+    let description = document.getElementsByClassName("descInp")[0].value;
     const body = {
       title,
       user,
@@ -73,81 +145,50 @@ async function addTask() {
     )[0].innerHTML = `<button id="callFormBtn">+ Add Task</button>`;
   }
 }
+
 async function updateTask(event) {
   let taskId = parseInt(event.target.getAttribute("name"));
   let index = parseInt(event.target.getAttribute("index"));
-  console.log(taskId, index)
-  let title = document.getElementsByClassName("titleInp")[index].value;
-  let time = document.getElementsByClassName("timeInp")[index].value;
-  let description = document.getElementsByClassName("descInp")[index].value;
-  const body = {
-    title,
-    user,
-    time,
-    description,
-  };
-  console.log(body);
-  try {
-    let added = await fetch(
-      `http://127.0.0.1:5555/task/${taskId}?user=${user}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify(body),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    added = await added.json();
-    if (added.code !== 201) {
-      throw Error(added.message);
-    }
-    alert("Task has been added successfully");
-  } catch (error) {
-    console.log(error);
-  } finally {
-    let dateOptions = {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    };
-    document.getElementsByClassName("taskContainer")[
-      index
-    ].innerHTML = `<div class="taskContainer">
-          <div class="tick">
-            <input type="checkbox" class="tickBtn" value="done" ${
-              body.is_complete ? "checked=true" : ""
-            }/>
-          </div>
-          <div class="task">
-            <p class="title" style="font-weight: bolder">
-              ${body.title}
-              <span class="time">:at ${new Date(body.time).toLocaleDateString(
-                "en-US",
-                dateOptions
-              )}</span>
-            </p>
-            <p class="desc">${body.description}${
-      body.description.length > 40
-        ? `<button class="seeMore">...</button></p>`
-        : ""
-    }
-          </div>
-          <div class="update"><button class="updateBtn" name=${taskId} index=${index}>Update</button></div>
-          <div class="delete">
-            <button class="deleteBtn" name=${taskId} index=${index}>
-              <img
-                src="https://img.icons8.com/?size=100&id=102315&format=png&color=000000"
-                class="deleteIcon"
-              />
-            </button>
-          </div>
-        </div>
-        <p style="margin-top: 30px"></p>`;
+  let updateForms = document.getElementsByClassName("updateForm");
+  let taskIds = [];
+  for (let uform of updateForms) {
+    taskIds.push(uform.getAttribute("name"));
   }
+	console.log(taskIds)
+  // let updateIndex = taskIds.indexOf(taskId.toString());
+  // let title = document.getElementsByClassName("titleInp")[updateIndex].value;
+  // let time = document.getElementsByClassName("timeInp")[updateIndex].value;
+  // let description =
+  //   document.getElementsByClassName("descInp")[updateIndex].value;
+  // const body = {
+  //   title,
+  //   user,
+  //   time,
+  //   description,
+  // };
+  // console.log(body);
+  // try {
+  //   let updated = await fetch(
+  //     `http://127.0.0.1:5555/task/${taskId}?user=${user}`,
+  //     {
+  //       method: "PATCH",
+  //       body: JSON.stringify(body),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
+  //   updated = await updated.json();
+  //   if (updated.code !== 201) {
+  //     throw Error(updated.message);
+  //   }
+  //   alert("Task has been updated successfully");
+  // } catch (error) {
+  //   console.log(error);
+  // } finally {
+  //   document.getElementsByClassName("taskContainer")[index].innerHTML =
+  //     getTaskDetailHtml({ ...body, _id: taskId }, index);
+  // }
 }
 
 function openUpSearchBar() {
@@ -168,53 +209,15 @@ async function loadList() {
     }
     const { data } = response;
     let htmlString = "";
-    let dateOptions = {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    };
+
+    console.log(data.results[0]);
     for (let i = 0; i < data.results.length; i++) {
-      let res = data.results[i];
-      htmlString += `<div class="taskContainer">
-          <div class="tick">
-            <input type="checkbox" class="tickBtn" value="done" ${
-              res.is_complete ? "checked=true" : ""
-            }/>
-          </div>
-          <div class="task">
-            <p class="title" style="font-weight: bolder">
-              ${res.title}
-              <span class="time">:at ${new Date(res.time).toLocaleDateString(
-                "en-US",
-                dateOptions
-              )}</span>
-            </p>
-            <p class="desc">${res.description}${
-        res.description.length > 40
-          ? `<button class="seeMore">...</button></p>`
-          : ""
-      }
-          </div>
-          <div class="update"><button class="updateBtn" name=${
-            res._id
-          } index=${i}>Update</button></div>
-          <div class="delete">
-            <button class="deleteBtn" name=${res._id} index=${i}>
-              <img
-                src="https://img.icons8.com/?size=100&id=102315&format=png&color=000000"
-                class="deleteIcon"
-              />
-            </button>
-          </div>
-        </div>
-        <p style="margin-top: 30px"></p>`;
+      htmlString += getTaskDetailHtml(data.results[i], i);
     }
     return htmlString;
   } catch (error) {
     console.log(error);
+    return `<p></p>`;
   }
 }
 
@@ -233,25 +236,7 @@ async function callUpdateForm(event) {
   }
   data = data.data;
   let actionDiv = document.getElementsByClassName("taskContainer")[index];
-  actionDiv.innerHTML = `<div class="updateForm">
-          <span class="formTitle">
-            <label for="title">Title:</label>
-            <input type="text" class="titleInp" value="${data.title}"/>
-          </span>
-          <br />
-          <span class="formTime">
-            <label for="time">Time:</label>
-            <input type="datetime-local" class="timeInp" value="${data.time}"/>
-          </span>
-          <br />
-          <span class="formDesc">
-            <label for="description" class="newDesc">Description:</label>
-            <input type="text" class="descInp" value="${data.description}"/>
-          </span>
-        </div>
-        <span>
-          <button class="updateTaskBtn" name=${taskId} index=${index}>update</button>
-        </span>`;
+  actionDiv.innerHTML = getUpdateTaskFormHtml(data, taskId, index);
   // console.log(
   //   document
   //     .getElementsByClassName("taskContainer")

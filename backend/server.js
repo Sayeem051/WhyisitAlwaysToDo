@@ -3,8 +3,11 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import { TaskRouter } from "./crud.js";
+import { initiateDb } from "./initiateDb.js";
 
 dotenv.config();
+
+initiateDb();
 
 const app = express();
 
