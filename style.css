@@ -1,0 +1,257 @@
+body {
+  background-color: rgb(50, 52, 55);
+}
+
+.upper-banner {
+  display: flex;
+  width: 102%;
+  height: 150px;
+  margin-top: -10px;
+  margin-left: -8px;
+  background-color: rgb(205, 203, 200);
+  justify-content: space-around;
+}
+#main_logo {
+  margin-top: 25px;
+  margin-left: 200px;
+  width: 10%;
+  height: auto;
+}
+
+#searchIcon {
+  padding-top: 45px;
+  padding-right: 250px;
+  margin-left: 400px;
+  width: var(--searchIconDim);
+  height: var(--searchIconDim);
+}
+
+.hl_logo {
+  width: 50%;
+  height: auto;
+}
+
+.middle {
+  display: block;
+  margin-left: 25%;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+}
+
+@font-face {
+  font-family: "ArialIs";
+  src: url("./static/arial.ttf");
+}
+
+li {
+  list-style-type: none;
+}
+
+.taskContainer {
+  display: flex;
+  justify-content: center;
+  border-style: var(--contentBorderStyle);
+  border-color: var(--contentBorderColor);
+  border-radius: var(--contentBorderRadius);
+  height: fit-content;
+  background-color: var(--contentColor);
+  font-family: "ArialIs";
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.tick {
+  margin-top: 35px;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.tickBtn {
+  cursor: pointer;
+  transform: scale(2);
+}
+
+.task {
+  padding-right: 150px;
+}
+
+.title {
+  font-weight: 900;
+  font-size: large;
+  word-wrap: break-word;
+  width: 500px;
+}
+
+.time {
+  font-weight: 300 !important;
+}
+
+.desc {
+  filter: opacity(80%);
+  word-wrap: break-word;
+}
+
+.title,
+.time,
+.desc {
+  color: white;
+}
+
+.seeMore {
+  background-color: lightgray;
+  height: 12px;
+  border-radius: 20px;
+  border: none;
+  display: inline-flex;
+  align-items: flex-end;
+  cursor: pointer;
+}
+
+.update {
+  margin: auto;
+}
+
+.updateBtn {
+  font-family: "ArialIs";
+  transform: scale(1.2);
+  background-color: var(--contentBorderColor);
+  border: none;
+  border-radius: 20px;
+  padding: 10px;
+  cursor: pointer;
+}
+.delete {
+  margin: auto;
+}
+
+.deleteIcon {
+  width: var(--deleteIconDim);
+  height: var(--deleteIconDim);
+}
+
+.deleteBtn {
+  width: 90px;
+  background-color: rgb(255, 61, 61);
+  border: none;
+  border-radius: 5px;
+  padding-top: 8px;
+  padding-bottom: 5px;
+  cursor: pointer;
+}
+
+.action {
+  margin-top: 50px;
+  margin-bottom: 30px;
+  border-style: var(--contentBorderStyle);
+  border-color: var(--contentBorderColor);
+  border-radius: var(--contentBorderRadius);
+  width: 100%;
+  height: 80px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+#content {
+  position: relative;
+}
+
+#callFormBtn {
+  border: none;
+  height: var(--actionDivHeight);
+  width: var(--actionDivWidth);
+  border-radius: 10px;
+  background-color: transparent;
+  font-size: xx-large;
+  font-family: "ArialIs";
+  font-weight: 400;
+  color: var(--contentColor);
+  filter: opacity(50%);
+  cursor: pointer;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+#taskForm {
+  width: 500px;
+  height: 100px;
+  color: var(--contentBorderColor);
+  font-family: "ArialIs";
+  font-weight: 400;
+  font-size: x-large;
+}
+
+.updateForm {
+  width: 500px;
+  height: 100px;
+  color: var(--contentBorderColor);
+  background-color: var(--contentColor);
+  font-family: "ArialIs";
+  font-weight: 400;
+  font-size: x-large;
+}
+
+.formTitle,
+.formTime,
+.formDesc {
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
+}
+
+#newDesc {
+  margin-top: 8px;
+}
+
+.timeInp {
+  font-family: "ArialIs";
+}
+
+.descInp {
+  width: auto;
+  height: 40px;
+}
+
+.titleInp,
+.descInp,
+.timeInp {
+  background-color: lightblue;
+  width: 200px;
+}
+
+#addTaskBtn {
+  font-family: "ArialIs";
+  transform: scale(1.2);
+  background-color: var(--contentBorderColor);
+  border: none;
+  border-radius: 20px;
+  padding: 10px;
+  margin-left: 50px;
+  cursor: pointer;
+}
+.updateTaskBtn {
+  font-family: "ArialIs";
+  transform: scale(1.2);
+  background-color: var(--contentBorderColor);
+  border: none;
+  border-radius: 20px;
+  padding: 10px;
+  margin-left: 50px;
+  margin-top: 30%;
+  cursor: pointer;
+}
+
+:root {
+  --searchIconDim: 55px;
+  --deleteIconDim: 25%;
+  --contentBorderColor: white;
+  --contentColor: #4b6c8d;
+  --contentBorderRadius: 20px;
+  --contentBorderStyle: dashed;
+  --marginLeft: -10%;
+  --actionDivWidth: 1100px;
+  --actionDivHeight: 110px;
+  --elementBorder: 5px solid black;
+}

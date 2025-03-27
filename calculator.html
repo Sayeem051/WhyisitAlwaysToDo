@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- For Google -->
+    <meta name="description" content="best description ever" />
+    <meta name="keyword" content="best,description" />
+    <meta name="author" content="pandu" />
+
+    <!-- For facebook -->
+    <meta property="og:title" content="basic html page" />
+    <meta property="og:url" content="http://127.0.0.1:5500/index.html" />
+    <meta property="og:site_name" , content="Practice" />
+    <meta property="og:description" , content="description" />
+    <meta property="og:image" , content=".//" />
+
+    <!-- Browser caching control -->
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+    <style>
+      h3 {
+        color: crimson;
+      }
+    </style>
+    <link rel="stylesheet" href="style.css" />
+    <title>Is it happening?</title>
+  </head>
+
+  <body>
+    <label for="number1">Input Number 1: </label>
+    <input id="n1" style="cursor: auto" onchange="getVal(1)" />
+    <br />
+    <label for="number2">Input Number 2: </label>
+    <input id="n2" style="cursor: auto" onchange="getVal(2)" />
+    <style>
+      button {
+        margin-top: 30px;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      .others {
+        margin-left: 15px;
+      }
+    </style>
+    <div class="buttons">
+      <button onclick="sumFunc()">+</button>
+      <button onclick="divideFunc()" class="others">/</button>
+      <button onclick="subFunc()" class="others">-</button>
+      <button onclick="mulFunc()" class="others">*</button>
+      <button onclick="modFunc()" class="others">%</button>
+    </div>
+    <br />
+    <p
+      id="answer"
+      style="font-weight: bolder; font-family: Arial, Helvetica, sans-serif"
+    ></p>
+    <script>
+      let inputFields = document.getElementsByTagName("input");
+      let numbers = new Array(inputFields.length).fill(undefined);
+      function getVal(which) {
+        numbers.forEach((number, index) => {
+          if (index == which - 1) {
+            numbers[index] = parseFloat(
+              document.getElementById(`n${index + 1}`).value
+            );
+          }
+        });
+        console.log(numbers);
+      }
+      let answer = document.getElementById("answer");
+      function sumFunc() {
+        answer.innerHTML = numbers[0] + numbers[1];
+      }
+      function divideFunc() {
+        if (!n2) {
+          alert("Cannot divide by zero!");
+        } else {
+          answer.innerHTML = numbers[0] / numbers[1];
+        }
+      }
+      function subFunc() {
+        answer.innerHTML = numbers[0] - numbers[1];
+      }
+      function mulFunc() {
+        if (!n1 || !n2) {
+          answer.innerHTML = "Muda dayo!";
+        } else {
+          answer.innerHTML = numbers[0] * numbers[1];
+        }
+      }
+      function modFunc() {
+        if (!n2) {
+          alert("Zero doesn't work");
+        } else {
+          answer.innerHTML = numbers[0] % numbers[1];
+        }
+      }
+    </script>
+  </body>
+</html>
