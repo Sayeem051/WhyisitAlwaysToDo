@@ -27,10 +27,8 @@ function getAddTaskFormHtml() {
         </span>`;
 }
 
-function getTaskDetailHtml(data, index) {
-  console.log(data);
-  return `<div class="taskContainer">
-          <div class="tick">
+function getTaskDetailHtml(data, full = false) {
+  let content = `<div class="tick">
             <input type="checkbox" class="tickBtn" value="done" ${
               data.is_complete ? "checked=true" : ""
             }/>
@@ -43,29 +41,34 @@ function getTaskDetailHtml(data, index) {
                 dateOptions
               )}</span>
             </p>
-            <p class="desc">${data.description.slice(0, 40)}${
-    data.description.length > 40
-      ? `<button class="seeMore">...</button></p>`
+            <p class="desc">${
+              full ? data.description : data.description.slice(0, 40)
+            }${
+    data.description.length > 40 && !full
+      ? `<button class="seeMore" name=${data._id}>...</button></p>`
       : ""
   }
           </div>
           <div class="update"><button class="updateBtn" name=${
             data._id
-          } index=${index}>Update</button></div>
+          }>Update</button></div>
           <div class="delete">
-            <button class="deleteBtn" name=${data._id} index=${index}>
+            <button class="deleteBtn" name=${data._id}>
               <img
                 src="https://img.icons8.com/?size=100&id=102315&format=png&color=000000"
                 class="deleteIcon"
               />
             </button>
-          </div>
-        </div>
-        <p style="margin-top: 30px"></p>`;
+          </div>`;
+  return full
+    ? content
+    : `<div class="taskContainer" name=${data._id}>
+          ${content}
+        </div>`;
 }
 
-function getUpdateTaskFormHtml(data, taskId, index) {
-  return `<div class="updateForm" name=${taskId} index=${index}>
+function getUpdateTaskFormHtml(data, taskId) {
+  return `<div class="updateForm" name=${taskId}>
           <span class="formTitle">
             <label for="title">Title:</label>
             <input type="text" class="titleInp" value="${data.title}"/>
@@ -82,8 +85,16 @@ function getUpdateTaskFormHtml(data, taskId, index) {
           </span>
         </div>
         <span>
-          <button class="updateTaskBtn" name=${taskId} index=${index}>update</button>
+          <button class="updateTaskBtn" name=${taskId}>update</button>
         </span>`;
+}
+
+function findActualIndex(elementClass, taskId, taskIds = []) {
+  let taskContainers = document.getElementsByClassName(elementClass);
+  for (let tc of taskContainers) {
+    taskIds.push(parseInt(tc.getAttribute("name")));
+  }
+  return taskIds.indexOf(taskId);
 }
 
 let dateOptions = {
@@ -124,7 +135,6 @@ async function addTask() {
       time,
       description,
     };
-    console.log(body);
     let added = await fetch("http://127.0.0.1:5555/task", {
       method: "POST",
       body: JSON.stringify(body),
@@ -148,47 +158,66 @@ async function addTask() {
 
 async function updateTask(event) {
   let taskId = parseInt(event.target.getAttribute("name"));
-  let index = parseInt(event.target.getAttribute("index"));
-  let updateForms = document.getElementsByClassName("updateForm");
   let taskIds = [];
-  for (let uform of updateForms) {
-    taskIds.push(uform.getAttribute("name"));
+  document.getElementById("taskForm") ? taskIds.push(null) : "";
+  let updateIndex = findActualIndex("updateForm", taskId, taskIds);
+  let title = document.getElementsByClassName("titleInp")[updateIndex].value;
+  let time = document.getElementsByClassName("timeInp")[updateIndex].value;
+  let description =
+    document.getElementsByClassName("descInp")[updateIndex].value;
+  const body = {
+    title,
+    user,
+    time,
+    description,
+  };
+  try {
+    let updated = await fetch(
+      `http://127.0.0.1:5555/task/${taskId}?user=${user}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(body),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    updated = await updated.json();
+    if (updated.code !== 200) {
+      throw Error(updated.message);
+    }
+    alert("Task has been updated successfully");
+  } catch (error) {
+    console.log(error);
+  } finally {
+    let index = findActualIndex("taskContainer", taskId);
+    document.getElementsByClassName("taskContainer")[index].innerHTML =
+      getTaskDetailHtml({ ...body, _id: taskId });
   }
-	console.log(taskIds)
-  // let updateIndex = taskIds.indexOf(taskId.toString());
-  // let title = document.getElementsByClassName("titleInp")[updateIndex].value;
-  // let time = document.getElementsByClassName("timeInp")[updateIndex].value;
-  // let description =
-  //   document.getElementsByClassName("descInp")[updateIndex].value;
-  // const body = {
-  //   title,
-  //   user,
-  //   time,
-  //   description,
-  // };
-  // console.log(body);
-  // try {
-  //   let updated = await fetch(
-  //     `http://127.0.0.1:5555/task/${taskId}?user=${user}`,
-  //     {
-  //       method: "PATCH",
-  //       body: JSON.stringify(body),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
-  //   updated = await updated.json();
-  //   if (updated.code !== 201) {
-  //     throw Error(updated.message);
-  //   }
-  //   alert("Task has been updated successfully");
-  // } catch (error) {
-  //   console.log(error);
-  // } finally {
-  //   document.getElementsByClassName("taskContainer")[index].innerHTML =
-  //     getTaskDetailHtml({ ...body, _id: taskId }, index);
-  // }
+}
+
+async function seeMore(event) {
+  let taskId = parseInt(event.target.getAttribute("name"));
+  try {
+    let response = await fetch(
+      `http://127.0.0.1:5555/task/${taskId}?user=${user}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    response = await response.json();
+    if (response.code !== 200) {
+      throw Error(response.message);
+    }
+    let index = findActualIndex("taskContainer", taskId);
+    document.getElementsByClassName("taskContainer")[index].innerHTML =
+      getTaskDetailHtml(response.data, true);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function openUpSearchBar() {
@@ -210,9 +239,8 @@ async function loadList() {
     const { data } = response;
     let htmlString = "";
 
-    console.log(data.results[0]);
     for (let i = 0; i < data.results.length; i++) {
-      htmlString += getTaskDetailHtml(data.results[i], i);
+      htmlString += getTaskDetailHtml(data.results[i]);
     }
     return htmlString;
   } catch (error) {
@@ -223,7 +251,6 @@ async function loadList() {
 
 async function callUpdateForm(event) {
   let taskId = parseInt(event.target.getAttribute("name"));
-  let index = parseInt(event.target.getAttribute("index"));
   let data = await fetch(`http://127.0.0.1:5555/task/${taskId}?user=${user}`, {
     method: "GET",
     headers: {
@@ -235,13 +262,9 @@ async function callUpdateForm(event) {
     throw Error(data.message);
   }
   data = data.data;
+  let index = findActualIndex("taskContainer", taskId);
   let actionDiv = document.getElementsByClassName("taskContainer")[index];
-  actionDiv.innerHTML = getUpdateTaskFormHtml(data, taskId, index);
-  // console.log(
-  //   document
-  //     .getElementsByClassName("taskContainer")
-  //     [index].children[1].children[0].addEventListener("click")
-  // );
+  actionDiv.innerHTML = getUpdateTaskFormHtml(data, taskId);
   let titleInput =
     document.getElementsByClassName("taskContainer")[index].children[0]
       .children[0].children[1];
@@ -257,3 +280,6 @@ document.getElementById("content").innerHTML += await loadList();
 
 let updates = document.getElementsByClassName("update");
 for (let update of updates) update.addEventListener("click", callUpdateForm);
+
+let allSeeMores = document.getElementsByClassName("seeMore");
+for (let sm of allSeeMores) sm.addEventListener("click", seeMore);
