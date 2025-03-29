@@ -8,7 +8,7 @@ import {
   seeMore,
 } from "./JS/crud.js";
 
-let api = true
+let api = false
   ? "http://127.0.0.1:5555"
   : "https://whyisitalwaystodo.onrender.com";
 
