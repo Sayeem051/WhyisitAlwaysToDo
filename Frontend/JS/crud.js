@@ -68,7 +68,7 @@ async function addTask() {
       time,
       description,
     };
-    let added = await fetch("http://127.0.0.1:5555/task", {
+    let added = await fetch(api + "/task", {
       method: "POST",
       body: JSON.stringify(body),
       headers: {
