@@ -6,7 +6,6 @@ const TaskRouter = express.Router();
 TaskRouter.post("/", (req, res, next) => {
   try {
     let { title, user, description, time } = req.body;
-    console.log(req.body);
     if ([null, ""].includes(title) || user == null)
       throw Error("Must provide title and user info");
     req.body.title = title.trim();
@@ -80,7 +79,6 @@ TaskRouter.post("/", (req, res, next) => {
       }
       let list = todolist.filter(({ user }) => user == req.query.user);
       let total = list.length;
-      console.log(total)
       list = list.slice(offset).slice(0, limit);
       return res.status(200).json({
         code: 200,

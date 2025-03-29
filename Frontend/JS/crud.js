@@ -110,10 +110,6 @@ async function callUpdateForm(event) {
     document
       .getElementsByClassName("taskContainer")
       [index].children[1].addEventListener("click", updateTask);
-    console.log(
-      index,
-      document.getElementsByClassName("taskContainer")[index].children[2]
-    );
     document
       .getElementsByClassName("taskContainer")
       [index].children[2].addEventListener("click", cancel);
@@ -196,11 +192,9 @@ async function deleteTask(event) {
 
 async function seeMore(event) {
   let taskId = parseInt(event.target.getAttribute("name"));
-  console.log(taskId);
   try {
     let response = await getTask(taskId);
     let index = findActualIndex("taskContainer", taskId);
-    console.log(index);
     document.getElementsByClassName("taskContainer")[index].innerHTML =
       getTaskDetailHtml(response, true, true);
     initiateButtons(

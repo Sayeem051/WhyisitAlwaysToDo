@@ -104,7 +104,6 @@ function initiateButtons(buttonsList, index = null) {
     let nextDisabled = document
       .getElementById("next")
       ?.getAttribute("disabled");
-    console.log(nextDisabled);
     if (![undefined, true].includes(nextDisabled)) {
       document
         .getElementById("next")
