@@ -80,8 +80,10 @@ function initiateButtons(buttonsList, index = null) {
   }
 
   if (!buttonsList || buttonsList.includes("prev")) {
-    let prevDisabled = document.getElementById("prev").getAttribute("disabled");
-    if (!prevDisabled) {
+    let prevDisabled = document
+      .getElementById("prev")
+      ?.getAttribute("disabled");
+    if (![undefined, true].includes(prevDisabled)) {
       document
         .getElementById("prev")
         .addEventListener("click", async function () {
@@ -95,8 +97,11 @@ function initiateButtons(buttonsList, index = null) {
   }
 
   if (!buttonsList || buttonsList.includes("next")) {
-    let nextDisabled = document.getElementById("next").getAttribute("disabled");
-    if (!nextDisabled) {
+    let nextDisabled = document
+      .getElementById("next")
+      ?.getAttribute("disabled");
+    console.log(nextDisabled);
+    if (![undefined, true].includes(nextDisabled)) {
       document
         .getElementById("next")
         // .addEventListener("click", loadList(current_page + 1, selected));
@@ -138,13 +143,15 @@ async function loadList(page, count) {
     for (let i = 0; i < data.results.length; i++) {
       htmlString += getTaskDetailHtml(data.results[i]);
     }
-    document.getElementById("pagination").innerHTML = getPaginationHtml(
-      data,
-      current_page,
-      count
-    );
-    document.getElementById("pagination").setAttribute("name", current_page);
-    document.getElementById("count").addEventListener("change", changeList);
+    if (data.results.length) {
+      document.getElementById("pagination").innerHTML = getPaginationHtml(
+        data,
+        current_page,
+        count
+      );
+      document.getElementById("pagination").setAttribute("name", current_page);
+      document.getElementById("count").addEventListener("change", changeList);
+    }
     return htmlString;
   } catch (error) {
     console.log(error);

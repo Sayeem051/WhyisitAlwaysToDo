@@ -125,7 +125,8 @@ p {
 }
 
 .tick {
-  margin-top: 35px;
+  margin-top: auto;
+  margin-bottom: auto;
   padding-left: 40px;
   padding-right: 40px;
 }

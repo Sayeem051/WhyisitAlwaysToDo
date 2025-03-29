@@ -87,7 +87,7 @@ function getUpdateTaskFormHtml(data, taskId) {
               <input type="text" class="descInp" value="${data.description}"/>
             </span>
             </div>
-            <button class="updateTaskBtn" name=${taskId}>update</button>
+            <button class="updateTaskBtn" name=${taskId}>Update</button>
             <button class="cancel" name=${taskId}>Cancel</button>
           `;
 }
@@ -95,6 +95,7 @@ function getUpdateTaskFormHtml(data, taskId) {
 function getPaginationHtml(data, page, count) {
   let selectables = [3, 5, 10];
   let optStr = "";
+  let total = data.meta.total;
   selectables.forEach(
     (opt, i) =>
       (optStr += `<option value="${opt}"${
@@ -107,10 +108,9 @@ function getPaginationHtml(data, page, count) {
               ${optStr}
             </select>
           </p>
-          <p>${Math.max(0, page - 1) * count + 1} - ${Math.min(
-    data.meta.total,
-    page * count
-  )} of ${data.meta.total}</p>
+          <p>${!total ? 0 : Math.max(0, page - 1) * count + 1} - ${
+    !total ? 0 : Math.min(data.meta.total, page * count)
+  } of ${data.meta.total}</p>
           <button id="prev" ${data.meta.previous_page ? "" : "disabled=true"}>
             <img src="./static/left-chevron.png" alt="" />
           </button>

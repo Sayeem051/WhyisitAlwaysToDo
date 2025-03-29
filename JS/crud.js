@@ -33,7 +33,7 @@ function openTaskAddForm() {
 
 async function cancel(event) {
   let taskId = parseInt(event.target.getAttribute("name"));
-  if (!taskId) {
+  if (isNaN(taskId)) {
     document.getElementsByClassName(
       "action"
     )[0].innerHTML = `<button id="callFormBtn">+ Add Task</button>`;
@@ -101,6 +101,10 @@ async function callUpdateForm(event) {
     document
       .getElementsByClassName("taskContainer")
       [index].children[1].addEventListener("click", updateTask);
+    console.log(
+      index,
+      document.getElementsByClassName("taskContainer")[index].children[2]
+    );
     document
       .getElementsByClassName("taskContainer")
       [index].children[2].addEventListener("click", cancel);
