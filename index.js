@@ -12,8 +12,8 @@ import {
 let user = localStorage.getItem("user");
 if (isNaN(user) || user === null) {
   user = Math.floor(Math.random() * 10);
-  let alreadyHas = await getTask();
-  if (alreadyHas) {
+  let alreadyHas = await fetch("http://127.0.0.1:5555/task?user=" + user);
+  if (alreadyHas.code == 200 && alreadyHas.data.results.length) {
     alert("Rare Easter Egg Moment!");
   }
   localStorage.setItem("user", user);
