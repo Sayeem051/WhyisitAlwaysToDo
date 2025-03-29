@@ -1,34 +1,53 @@
+@font-face {
+  font-family: "ArialIs";
+  src: url("./static/arial.ttf");
+}
+
+@font-face {
+  font-family: "headline";
+  src: url("./static/Signwood-vnvD7.ttf");
+}
+
+html,
 body {
   background-color: rgb(50, 52, 55);
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 .upper-banner {
   display: flex;
-  width: 102%;
+  justify-content: center;
+  width: 101%;
   height: 150px;
-  margin-top: -10px;
-  margin-left: -8px;
   background-color: rgb(205, 203, 200);
-  justify-content: space-around;
 }
+
 #main_logo {
+  filter: invert(0%);
   margin-top: 25px;
   margin-left: 200px;
   width: 10%;
   height: auto;
 }
 
-#searchIcon {
-  padding-top: 45px;
-  padding-right: 250px;
-  margin-left: 400px;
-  width: var(--searchIconDim);
-  height: var(--searchIconDim);
-}
-
 .hl_logo {
   width: 50%;
   height: auto;
+  display: inline-flex;
+  justify-content: start;
+  align-items: center;
+  text-decoration: none;
+}
+
+#headline {
+  margin-top: 15px;
+  margin-left: 20px;
+  font-size: xx-large;
+  font-weight: 900;
+  font-family: "headline";
+  color: black;
 }
 
 .middle {
@@ -39,13 +58,53 @@ body {
   align-items: center;
 }
 
-@font-face {
-  font-family: "ArialIs";
-  src: url("./static/arial.ttf");
+#pagination {
+  margin-top: 15px;
+  margin-bottom: 50px;
+  display: flex;
+  justify-content: flex-end;
 }
 
-li {
-  list-style-type: none;
+img {
+  filter: invert(100%);
+  margin-top: 3px;
+  width: var(--searchIconDim);
+  height: var(--searchIconDim);
+}
+
+#next,
+#prev {
+  cursor: pointer;
+  background-color: transparent;
+  width: 50px;
+  height: 50px;
+  border: none;
+}
+
+#next:hover,
+#prev:hover {
+  background-color: bisque;
+  filter: opacity(75px);
+  border-radius: 50px;
+}
+
+#next:disabled,
+#prev:disabled {
+  background-color: transparent;
+  filter: opacity(50%);
+  cursor: auto !important;
+}
+
+#count {
+  width: fit-content;
+  background-color: lightblue;
+  border: none;
+}
+p {
+  margin-left: 20px;
+  margin-right: 20px;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .taskContainer {
@@ -54,18 +113,21 @@ li {
   border-style: var(--contentBorderStyle);
   border-color: var(--contentBorderColor);
   border-radius: var(--contentBorderRadius);
+  width: fit-content;
   height: fit-content;
   background-color: var(--contentColor);
   font-family: "ArialIs";
   padding-top: 15px;
   padding-bottom: 15px;
-	margin-top: 30px;
+  padding-right: 171px;
+  padding-left: 25px;
+  margin-top: 30px;
 }
 
 .tick {
   margin-top: 35px;
-  margin-left: 40px;
-  margin-right: 40px;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 .tickBtn {
@@ -74,7 +136,7 @@ li {
 }
 
 .task {
-  padding-right: 150px;
+  padding-right: 8%;
 }
 
 .title {
@@ -90,7 +152,7 @@ li {
 
 .desc {
   filter: opacity(80%);
-	width: 500px;
+  width: 500px;
   word-wrap: break-word;
 }
 
@@ -112,6 +174,8 @@ li {
 
 .update {
   margin: auto;
+  padding-right: 30px;
+  padding-left: 30px;
 }
 
 .updateBtn {
@@ -125,11 +189,14 @@ li {
 }
 .delete {
   margin: auto;
+  padding-left: 30px;
 }
 
 .deleteIcon {
   width: var(--deleteIconDim);
   height: var(--deleteIconDim);
+  pointer-events: none;
+  filter: none;
 }
 
 .deleteBtn {
@@ -147,10 +214,8 @@ li {
   border-style: var(--contentBorderStyle);
   border-color: var(--contentBorderColor);
   border-radius: var(--contentBorderRadius);
-  width: 100%;
-  height: 80px;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  width: 1078px;
+  height: 110px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -162,7 +227,7 @@ li {
 #callFormBtn {
   border: none;
   height: var(--actionDivHeight);
-  width: var(--actionDivWidth);
+  width: 100%;
   border-radius: 10px;
   background-color: transparent;
   font-size: xx-large;
@@ -192,6 +257,7 @@ li {
   font-family: "ArialIs";
   font-weight: 400;
   font-size: x-large;
+  padding-left: 150px;
 }
 
 .formTitle,
@@ -230,22 +296,36 @@ li {
   border-radius: 20px;
   padding: 10px;
   margin-left: 50px;
-  cursor: text;
+  margin-right: 30px;
+  margin-bottom: 40px;
+  cursor: auto;
 }
+
+.cancel {
+  font-family: "ArialIs";
+  transform: scale(1.2);
+  background-color: var(--contentBorderColor);
+  border: none;
+  height: fit-content;
+  border-radius: 20px;
+  margin: 37.5px 50px 0px 0px;
+  padding: 10px;
+}
+
 .updateTaskBtn {
   font-family: "ArialIs";
   transform: scale(1.2);
   background-color: var(--contentBorderColor);
   border: none;
+  height: fit-content;
   border-radius: 20px;
   padding: 10px;
-  margin-left: 50px;
-  margin-top: 30%;
+  margin: 37.5px 30px 0px 30px;
   cursor: pointer;
 }
 
 :root {
-  --searchIconDim: 55px;
+  --searchIconDim: 30px;
   --deleteIconDim: 25%;
   --contentBorderColor: white;
   --contentColor: #4b6c8d;

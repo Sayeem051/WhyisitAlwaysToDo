@@ -7,7 +7,7 @@ TaskRouter.post("/", (req, res, next) => {
   try {
     let { title, user, description, time } = req.body;
     console.log(req.body);
-    if (title == null || user == null)
+    if ([null, ""].includes(title) || user == null)
       throw Error("Must provide title and user info");
     req.body.title = title.trim();
     let todolist = fs.readFileSync("./tododb.json").toString();
@@ -111,7 +111,13 @@ TaskRouter.post("/", (req, res, next) => {
   .patch("/:taskId", (req, res, next) => {
     try {
       let { title, description, time, is_complete } = req.body;
-      if (title) req.title = title.trim();
+      if (title == "") {
+        throw Error("Title cannot be empty");
+      }
+      if (title) {
+        title = title.trim();
+        req.body.title = title;
+      }
       if (!req.query.user) throw Error("Access Denied");
       let todolist = fs.readFileSync("./tododb.json").toString();
       todolist = JSON.parse(todolist == "" ? "[]" : todolist);
@@ -128,13 +134,13 @@ TaskRouter.post("/", (req, res, next) => {
       return res.status(200).json({
         code: 200,
         status: "success",
-        message: "Successfully added task!",
+        message: "Successfully updated task!",
         data: todolist[taskIndex],
       });
     } catch (error) {
-      return res.status(404).json({
-        code: 404,
-        status: "not found",
+      return res.status(400).json({
+        code: 400,
+        status: "failed",
         message: error.message,
       });
     }
