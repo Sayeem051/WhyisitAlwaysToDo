@@ -8,6 +8,10 @@ import {
   seeMore,
 } from "./JS/crud.js";
 
+let api = true
+  ? "http://127.0.0.1:5555"
+  : "https://whyisitalwaystodo.onrender.com";
+
 // Setting up global variables
 let user = localStorage.getItem("user");
 if (isNaN(user) || user === null) {
@@ -124,7 +128,7 @@ function initiateButtons(buttonsList, index = null) {
 async function loadList(page, count) {
   try {
     let response = await fetch(
-      `http://127.0.0.1:5555/task?user=${user}&page=${page}&count=${count}`,
+      `${api}/task?user=${user}&page=${page}&count=${count}`,
       {
         method: "GET",
         headers: {
@@ -179,4 +183,4 @@ document.getElementById("content").innerHTML = await loadList(
 );
 initiateButtons();
 
-export { initiateButtons, user, selected };
+export { initiateButtons, user, selected, current_page, api };

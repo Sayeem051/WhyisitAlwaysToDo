@@ -78,10 +78,10 @@ TaskRouter.post("/", (req, res, next) => {
       if (!todolist.length) {
         throw Error("Could not find task");
       }
-      let list = todolist
-        .filter(({ user }) => user == req.query.user)
-        .slice(offset)
-        .slice(0, limit);
+      let list = todolist.filter(({ user }) => user == req.query.user);
+      let total = list.length;
+      console.log(total)
+      list = list.slice(offset).slice(0, limit);
       return res.status(200).json({
         code: 200,
         status: "success",
@@ -92,7 +92,7 @@ TaskRouter.post("/", (req, res, next) => {
             next_page:
               todolist.length > offset + limit ? currentPage + 1 : null,
             previous_page: currentPage <= 1 ? null : currentPage - 1,
-            total: todolist.length,
+            total,
           },
           results: list,
         },

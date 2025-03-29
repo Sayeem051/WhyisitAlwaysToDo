@@ -37,7 +37,7 @@ app.use("/", (req, res, next) => {
 
 app.use(express.urlencoded({ extended: false }));
 
-const port = process.env.PORT;
+const port = process.env.PORT || 5555;
 app.listen(port, () => {
   console.log("Server is running on port " + port);
 });

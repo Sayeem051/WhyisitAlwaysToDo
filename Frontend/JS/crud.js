@@ -5,11 +5,17 @@ import {
   findActualIndex,
 } from "./helper.js";
 
-import { initiateButtons, user, selected } from "../index.js";
+import {
+  initiateButtons,
+  user,
+  selected,
+  current_page,
+  api,
+} from "../index.js";
 
 async function getTask(taskId) {
   try {
-    let data = await fetch(`http://127.0.0.1:5555/task/${taskId}?user=${user}`);
+    let data = await fetch(`${api}/task/${taskId}?user=${user}`);
     data = await data.json();
     if (data.code != 200) {
       throw Error(data.message);
@@ -51,6 +57,7 @@ async function cancel(event) {
 }
 
 async function addTask() {
+  let err = false;
   try {
     let title = document.getElementsByClassName("titleInp")[0].value;
     let time = document.getElementsByClassName("timeInp")[0].value;
@@ -70,6 +77,7 @@ async function addTask() {
     });
     added = await added.json();
     if (added.code !== 201) {
+      err = true;
       throw Error(added.message);
     }
     alert("Task has been added successfully");
@@ -82,6 +90,7 @@ async function addTask() {
     document
       .getElementById("callFormBtn")
       .addEventListener("click", openTaskAddForm);
+    if (!err) location.reload();
   }
 }
 
@@ -134,16 +143,13 @@ async function updateTask(event) {
       err = true;
       throw Error("Title cannot be empty!");
     }
-    let updated = await fetch(
-      `http://127.0.0.1:5555/task/${taskId}?user=${user}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify(body),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    let updated = await fetch(`${api}/task/${taskId}?user=${user}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     updated = await updated.json();
     if (updated.code !== 200) {
       err = true;
@@ -169,20 +175,18 @@ async function deleteTask(event) {
   if (!value) return;
   let taskId = parseInt(event.target.getAttribute("name"));
   try {
-    let deleted = await fetch(
-      `http://127.0.0.1:5555/task/${taskId}?user=${user}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    let deleted = await fetch(`${api}/task/${taskId}?user=${user}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     deleted = await deleted.json();
     if (deleted.code !== 200) {
       throw Error(deleted.message);
     }
     alert("Task has been deleted successfully");
+    location.reload();
   } catch (error) {
     alert(error.message);
   } finally {
@@ -215,16 +219,13 @@ async function updateStatus(event) {
     let checkedStatus = document
       .getElementsByClassName("tickBtn")
       [index].getAttribute("checked");
-    let completed = await fetch(
-      `http://127.0.0.1:5555/task/${taskId}?user=${user}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify({ is_complete: checkedStatus ? false : true }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    let completed = await fetch(`${api}/task/${taskId}?user=${user}`, {
+      method: "PATCH",
+      body: JSON.stringify({ is_complete: checkedStatus ? false : true }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     completed = await completed.json();
     if (completed.code !== 200) {
       throw Error(completed.message);
